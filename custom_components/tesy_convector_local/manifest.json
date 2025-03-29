@@ -1,11 +1,11 @@
 {
     "domain": "tesy_convector_local",
     "name": "Tesy Convector Integration",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "documentation": "https://github.com/rokent/TesyConvector",
     "dependencies": [],
     "requirements": ["requests"],
-    "codeowners": ["@alexanderpp"],
+    "codeowners": ["@rokent"],
     "config_flow": true,
     "integration_type": "device",
     "iot_class": "local_polling",
