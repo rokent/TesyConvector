@@ -1,8 +1,8 @@
 {
     "domain": "tesy_convector_local",
     "name": "Tesy Convector Integration",
-    "version": "1.0.0",
-    "documentation": "https://github.com/alexanderpp/TesyConvectorLocal",
+    "version": "1.0.1",
+    "documentation": "https://github.com/rokent/TesyConvector",
     "dependencies": [],
     "requirements": ["requests"],
     "codeowners": ["@alexanderpp"],
