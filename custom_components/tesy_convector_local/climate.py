@@ -87,7 +87,7 @@ class TesyConvectorClimate(ClimateEntity):
         self._remove_update_listener = async_track_time_interval(
             self.hass,
             self.async_update,
-            timedelta(seconds=10),
+            timedelta(seconds=60),
         )
 
     async def async_update(self, *args):

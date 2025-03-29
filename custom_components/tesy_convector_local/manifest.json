@@ -1,7 +1,7 @@
 {
     "domain": "tesy_convector_local",
     "name": "Tesy Convector Integration",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "documentation": "https://github.com/rokent/TesyConvector",
     "dependencies": [],
     "requirements": ["requests"],
