@@ -8,7 +8,7 @@ from .const import DOMAIN
 STEP_USER_DATA_SCHEMA = vol.Schema({
     vol.Required("ip_address"): str,
     vol.Optional("temperature_entity"): EntitySelector(
-        {"domain": "sensor"}  # Allow the user to select a temperature sensor entity
+        {"domain": "sensor"}
     )
 })
 
@@ -62,16 +62,24 @@ class TesyConvectorOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        schema = {
+            vol.Required(
+                "ip_address",
+                default=self.config_entry.options.get("ip_address", self.config_entry.data.get("ip_address"))
+            ): str
+        }
+
+        temp_entity = self.config_entry.options.get(
+            "temperature_entity",
+            self.config_entry.data.get("temperature_entity")
+        )
+
+        if temp_entity:
+            schema[vol.Optional("temperature_entity", default=temp_entity)] = EntitySelector({"domain": "sensor"})
+        else:
+            schema[vol.Optional("temperature_entity")] = EntitySelector({"domain": "sensor"})
+
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema({
-                vol.Required(
-                    "ip_address",
-                    default=self.config_entry.options.get("ip_address", self.config_entry.data.get("ip_address"))
-                ): str,
-                vol.Optional(
-                    "temperature_entity",
-                    default=self.config_entry.options.get("temperature_entity", self.config_entry.data.get("temperature_entity"))
-                ): EntitySelector({"domain": "sensor"})
-            }),
+            data_schema=vol.Schema(schema),
         )
