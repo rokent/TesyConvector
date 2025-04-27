@@ -95,3 +95,47 @@ class TesyConvectorClimate(ClimateEntity):
 
         status = await self.convector.get_status()
         _LOGGER.debug("Tesy Convector status: %s", status)
+
+        if (
+            "payload" in status and
+            "onOff" in status["payload"] and
+            "status" in status["payload"]["onOff"].get("payload", {})
+        ):
+            if status["payload"]["onOff"]["payload"]["status"] == "on":
+                self._hvac_mode = HVACMode.HEAT
+            else:
+                self._hvac_mode = HVACMode.OFF
+
+            set_temp_payload = status["payload"]["setTemp"].get("payload", {})
+            self._target_temp = set_temp_payload.get("temp")
+        else:
+            _LOGGER.error("Unexpected response structure from Tesy Convector: %s", status)
+            self._hvac_mode = HVACMode.OFF
+            self._target_temp = None
+
+    @property
+    def hvac_mode(self):
+        return self._hvac_mode
+
+    @property
+    def current_temperature(self):
+        return self._current_temp
+
+    @property
+    def target_temperature(self):
+        return self._target_temp
+
+    async def async_set_hvac_mode(self, hvac_mode):
+        if hvac_mode == HVACMode.HEAT:
+            await self.convector.turn_on()
+        elif hvac_mode == HVACMode.OFF:
+            await self.convector.turn_off()
+
+        await asyncio.sleep(0.1)
+
+    async def async_set_temperature(self, **kwargs):
+        temp = kwargs.get("temperature")
+        if temp is not None and self._target_temp != temp:
+            await self.convector.set_temperature(temp)
+            self._target_temp = temp
+            await asyncio.sleep(0.1)
